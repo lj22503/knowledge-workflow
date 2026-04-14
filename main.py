@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-Knowledge Workflow - 知识管理工作流主程序
+Context-Manager 上下文管理师
 
-完整系统：collect → tag → store → evolve → output → learn
-发布到 ClawHub，让其他 Agent 可以快速调用
+AI 驱动的系统性问题分析与解决方案生成工具
+让知识从"收藏"变成"认知"
 """
 
 import json
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from functools import wraps
 import time
 
@@ -21,67 +21,50 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# 导入子功能模块
-from subfunctions.collect import CollectFunction
-from subfunctions.tag import TagFunction
-from subfunctions.store import StoreFunction
-from subfunctions.evolve import EvolveFunction
-from subfunctions.output import OutputFunction
-from subfunctions.rule_miner import RuleMiner
-from subfunctions.belief_updater import BeliefUpdater
-from subfunctions.wiki_lint import WikiLint
+# 导入核心模块
+from modules.collector import ContextCollector
+from modules.tagger import MeaningTagger
+from modules.thought_tree import ThoughtTreeBuilder
+from modules.daily_log import DailyLogManager
+from modules.recall import DecisionRecaller
+from modules.bridge import ContextBridge
+from modules.review import CognitiveReviewer
+from modules.ai_analyzer import AIAnalyzer
+from modules.cognitive_map import CognitiveMapGenerator
 
 
-# 重试装饰器
-def retry(max_attempts=3, delay=1, exceptions=(Exception,)):
-    """重试装饰器"""
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            last_exception = None
-            for attempt in range(max_attempts):
-                try:
-                    return func(*args, **kwargs)
-                except exceptions as e:
-                    last_exception = e
-                    logger.warning(f"尝试 {attempt + 1}/{max_attempts} 失败：{str(e)}")
-                    if attempt < max_attempts - 1:
-                        time.sleep(delay)
-            logger.error(f"所有尝试失败：{str(last_exception)}")
-            raise last_exception
-        return wrapper
-    return decorator
-
-
-class KnowledgeWorkflow:
-    """知识管理工作流主类"""
+class ContextManager:
+    """上下文管理师主类"""
     
     # 超时配置（秒）
     TIMEOUT_CONFIG = {
         "collect": 30,
         "tag": 30,
-        "store": 30,
-        "evolve": 60,
-        "output": 60,
+        "build_tree": 60,
+        "recall": 60,
+        "daily_log": 30,
         "default": 30
     }
     
     def __init__(self, config_path: str = "~/kb/config.yaml"):
         self.config = self._load_config(config_path)
-        self.base_path = Path(self.config.get("base_path", "~/kb")).expanduser()
+        self.base_path = Path(self.config.get("base_path", "~/context")).expanduser()
         
         # 验证配置
         self._validate_config()
         
-        # 初始化子功能
-        self.collect_fn = CollectFunction(self.config)
-        self.tag_fn = TagFunction(self.config)
-        self.store_fn = StoreFunction(self.config)
-        self.evolve_fn = EvolveFunction(self.config)
-        self.output_fn = OutputFunction(self.config)
-        self.rule_miner = RuleMiner(str(self.base_path))
-        self.belief_updater = BeliefUpdater(str(self.base_path))
-        self.wiki_lint = WikiLint(str(self.base_path))
+        # 初始化核心模块
+        self.collector = ContextCollector(self.config)
+        self.tagger = MeaningTagger(self.config)
+        self.thought_tree = ThoughtTreeBuilder(self.config)
+        self.daily_log_mgr = DailyLogManager(self.config)
+        self.recall_mgr = DecisionRecaller(self.config)
+        self.bridge_mgr = ContextBridge(self.config)
+        self.review_mgr = CognitiveReviewer(self.config)
+        self.ai_analyzer = AIAnalyzer(self.config)
+        self.cognitive_map_gen = CognitiveMapGenerator(self.config)
+        
+        logger.info("✅ Context-Manager 初始化完成")
     
     def _load_config(self, config_path: str) -> dict:
         """加载配置文件"""
@@ -95,112 +78,242 @@ class KnowledgeWorkflow:
         """验证配置"""
         # 检查 base_path
         if not self.base_path.exists():
-            logger.info(f"创建知识库目录：{self.base_path}")
+            logger.info(f"创建上下文库目录：{self.base_path}")
             self.base_path.mkdir(parents=True, exist_ok=True)
         
         # 检查必需子目录
-        required_dirs = ["00-Inbox", "outputs"]
+        required_dirs = ["inbox", "contexts", "trees", "logs", "reviews"]
         for dir_name in required_dirs:
             dir_path = self.base_path / dir_name
             if not dir_path.exists():
                 logger.info(f"创建目录：{dir_path}")
                 dir_path.mkdir(parents=True, exist_ok=True)
         
-        logger.info("配置验证通过")
+        logger.info("✅ 配置验证通过")
+    
+    # ========== 核心功能 ==========
+    
+    def collect(self, 
+                source_type: str,
+                content: str,
+                metadata: Optional[Dict] = None) -> Dict[str, Any]:
+        """
+        收集上下文
+        
+        Args:
+            source_type: 来源类型 (feishu|wechat|xiaohongshu|inner_cognition|manual)
+            content: 内容
+            metadata: 可选元数据
+        
+        Returns:
+            收集结果
+        """
+        logger.info(f"收集 {source_type} 内容")
+        
+        result = self.collector.collect(source_type, content, metadata)
+        
+        logger.info(f"✓ 收集完成：{result.get('id')}")
+        
+        return result
+    
+    def tag(self, context_id: str, content: str) -> Dict[str, Any]:
+        """
+        打标（意义标签体系）
+        
+        Args:
+            context_id: 上下文 ID
+            content: 内容
+        
+        Returns:
+            打标结果
+        """
+        logger.info(f"打标 {context_id}")
+        
+        result = self.tagger.tag(context_id, content)
+        
+        logger.info(f"✓ 打标完成：{result.get('tags')}")
+        
+        return result
+    
+    def build_tree(self, 
+                   topic: str,
+                   time_range: str = "3months") -> Dict[str, Any]:
+        """
+        构建思维树
+        
+        Args:
+            topic: 主题
+            time_range: 时间范围 (3months|6months|1year)
+        
+        Returns:
+            思维树结果
+        """
+        logger.info(f"构建思维树：{topic} ({time_range})")
+        
+        result = self.thought_tree.build(topic, time_range)
+        
+        logger.info(f"✓ 思维树完成：{len(result.get('bridges', []))} 个桥接")
+        
+        return result
+    
+    def daily_log(self, items: List[Dict]) -> Dict[str, Any]:
+        """
+        认知日志（每日 3 件触动事）
+        
+        Args:
+            items: 触动事列表
+                [{
+                    "content": "触动事内容",
+                    "judgment": "你的判断"
+                }]
+        
+        Returns:
+            日志结果
+        """
+        logger.info(f"创建认知日志：{len(items)} 条")
+        
+        result = self.daily_log_mgr.create(items)
+        
+        logger.info(f"✓ 认知日志完成：{result.get('date')}")
+        
+        return result
+    
+    def recall(self, decision_context: str) -> Dict[str, Any]:
+        """
+        决策回溯
+        
+        Args:
+            decision_context: 决策上下文
+        
+        Returns:
+            回溯结果
+        """
+        logger.info(f"决策回溯：{decision_context[:50]}...")
+        
+        result = self.recall_mgr.recall(decision_context)
+        
+        logger.info(f"✓ 决策回溯完成：{len(result.get('similar_decisions', []))} 个类似决策")
+        
+        return result
+    
+    def bridge(self, 
+               inner_thought: str,
+               external_info: str) -> Dict[str, Any]:
+        """
+        上下文桥接
+        
+        Args:
+            inner_thought: 内心想法
+            external_info: 外部信息
+        
+        Returns:
+            桥接结果
+        """
+        logger.info(f"上下文桥接")
+        
+        result = self.bridge_mgr.build(inner_thought, external_info)
+        
+        logger.info(f"✓ 桥接完成：{result.get('type')}")
+        
+        return result
+    
+    def ai_boundary(self, items: List[Dict]) -> Dict[str, Any]:
+        """
+        AI 辅助边界
+        
+        Args:
+            items: 事项列表
+                [{
+                    "task": "事项",
+                    "boundary": "must_self|can_ai"
+                }]
+        
+        Returns:
+            边界清单
+        """
+        logger.info(f"设置 AI 辅助边界：{len(items)} 项")
+        
+        result = {
+            "items": items,
+            "must_self": [i for i in items if i["boundary"] == "must_self"],
+            "can_ai": [i for i in items if i["boundary"] == "can_ai"],
+            "created_at": datetime.now().isoformat()
+        }
+        
+        logger.info(f"✓ AI 边界完成：{len(result['must_self'])} 项必须自己思考")
+        
+        return result
+    
+    def review(self, 
+               period: str = "weekly",
+               operation: str = "generate_map") -> Dict[str, Any]:
+        """
+        认知更新（季度删除 + 年度重审）
+        
+        Args:
+            period: 周期 (weekly|quarterly|yearly)
+            operation: 操作 (generate_map|delete_redundant|review_core)
+        
+        Returns:
+            回顾结果
+        """
+        logger.info(f"认知更新：{period} - {operation}")
+        
+        if operation == "generate_map":
+            result = self.cognitive_map_gen.generate(period)
+        else:
+            result = self.review_mgr.run(period, operation)
+        
+        logger.info(f"✓ 认知更新完成")
+        
+        return result
+    
+    # ========== 一键工作流 ==========
     
     def run(self, 
             source_type: str,
             content: str,
-            metadata: Optional[Dict] = None,
-            auto_execute: bool = True) -> Dict[str, Any]:
+            auto_build_tree: bool = False,
+            auto_tag: bool = True) -> Dict[str, Any]:
         """
-        运行完整工作流
+        一键处理工作流
         
         Args:
-            source_type: 来源类型 (feishu|wechat|url|text)
-            content: 内容 (doc_token|URL|文本)
-            metadata: 可选元数据
-            auto_execute: 是否自动执行全流程
+            source_type: 来源类型
+            content: 内容
+            auto_build_tree: 是否自动构建思维树
+            auto_tag: 是否自动打标
         
         Returns:
-            工作流执行结果
+            工作流结果
         """
-        workflow_id = f"wf-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+        start_time = time.time()
+        
         result = {
-            "workflow_id": workflow_id,
+            "workflow_id": f"cm-{datetime.now().strftime('%Y%m%d%H%M%S')}",
             "status": "running",
             "steps": {}
         }
         
-        start_time = time.time()
-        
         try:
             # 步骤 1: 收集
-            logger.info(f"步骤 1/6: 收集 {source_type} 内容")
-            collect_result = self._execute_with_timeout(
-                self.collect_fn.execute,
-                "collect",
-                source_type=source_type,
-                content=content,
-                metadata=metadata
-            )
+            collect_result = self.collect(source_type, content)
             result["steps"]["collect"] = collect_result
-            logger.info(f"✓ 收集完成：{collect_result.get('note_id')}")
-            
-            if not auto_execute:
-                result["status"] = "paused_after_collect"
-                return result
             
             # 步骤 2: 打标
-            logger.info("步骤 2/6: 打标")
-            tag_result = self._execute_with_timeout(
-                self.tag_fn.execute,
-                "tag",
-                note_id=collect_result["note_id"],
-                content=collect_result["content"]
-            )
-            result["steps"]["tag"] = tag_result
-            logger.info(f"✓ 打标完成：{tag_result.get('tags', {}).get('themes', [])}")
+            if auto_tag:
+                tag_result = self.tag(
+                    collect_result["id"],
+                    collect_result.get("content", "")
+                )
+                result["steps"]["tag"] = tag_result
             
-            # 步骤 3: 存储
-            logger.info("步骤 3/6: 存储")
-            store_result = self._execute_with_timeout(
-                self.store_fn.execute,
-                "store",
-                note_id=tag_result["note_id"],
-                content=tag_result["content"],
-                tags=tag_result["tags"]
-            )
-            result["steps"]["store"] = store_result
-            logger.info(f"✓ 存储完成：{store_result.get('storage_path')}")
-            
-            # 步骤 4: 知识发芽
-            logger.info("步骤 4/6: 知识发芽")
-            evolve_result = self._execute_with_timeout(
-                self.evolve_fn.execute,
-                "evolve",
-                note_id=store_result["note_id"],
-                evolve_type=self.config.get("evolution", {}).get("default_type", "spark")
-            )
-            result["steps"]["evolve"] = evolve_result
-            logger.info(f"✓ 知识发芽完成：{evolve_result.get('evolve_id')}")
-            
-            # 步骤 5: 产出
-            logger.info("步骤 5/6: 产出")
-            output_result = self._execute_with_timeout(
-                self.output_fn.execute,
-                "output",
-                evolve_id=evolve_result["evolve_id"],
-                output_type=self.config.get("output", {}).get("default_type", "article")
-            )
-            result["steps"]["output"] = output_result
-            logger.info(f"✓ 产出完成：{output_result.get('output_id')}")
-            
-            # 步骤 6：规则提炼（自进化核心）
-            logger.info("步骤 6/6: 学习（规则提炼 + 信念更新）")
-            learn_result = self._learn_from_workflow(result)
-            result["steps"]["learn"] = learn_result
-            logger.info(f"✓ 学习完成：{learn_result.get('rules_created', 0)} 条规则，{learn_result.get('beliefs_updated', 0)} 个信念")
+            # 步骤 3: 构建思维树（可选）
+            if auto_build_tree:
+                # 提取主题
+                topic = self._extract_topic(content)
+                tree_result = self.build_tree(topic, "3months")
+                result["steps"]["build_tree"] = tree_result
             
             # 计算总耗时
             total_time = time.time() - start_time
@@ -211,20 +324,6 @@ class KnowledgeWorkflow:
             
             result["status"] = "completed"
             logger.info(f"✅ 工作流完成，总耗时：{result['performance']['total_time_ms']}ms")
-            
-        except TimeoutError as e:
-            total_time = time.time() - start_time
-            result["status"] = "failed"
-            result["error"] = {
-                "code": "TIMEOUT",
-                "message": f"执行超时：{str(e)}",
-                "suggestion": "内容可能过大，建议分批处理或增加超时时间"
-            }
-            result["performance"] = {
-                "total_time_ms": int(total_time * 1000),
-                "status": "failed"
-            }
-            logger.error(f"❌ 工作流失败（超时）：{str(e)}")
             
         except Exception as e:
             total_time = time.time() - start_time
@@ -242,124 +341,14 @@ class KnowledgeWorkflow:
         
         return result
     
-    def _learn_from_workflow(self, result: dict) -> dict:
-        """从工作流执行中学习，提炼规则 + 更新信念"""
-        learnings = {
-            "observations_added": 0,
-            "rules_created": 0,
-            "rules": [],
-            "beliefs_checked": 0,
-            "beliefs_updated": 0,
-            "conflicts": []
-        }
-        
-        # 检查是否有失败，记录观察
-        if result["status"].startswith("failed"):
-            self.rule_miner.add_observation(
-                category="工作流执行失败",
-                description=f"工作流 {result['workflow_id']} 执行失败",
-                context={"workflow_id": result["workflow_id"], "error": result["status"]},
-                lesson="需要检查工作流错误处理"
-            )
-            learnings["observations_added"] += 1
-        
-        # 检查打标置信度
-        tag_result = result["steps"].get("tag", {})
-        if tag_result.get("confidence", 1.0) < 0.6:
-            self.rule_miner.add_observation(
-                category="打标准确率低",
-                description=f"笔记 {tag_result.get('note_id')} 打标置信度仅 {tag_result.get('confidence')}",
-                context={"note_id": tag_result.get("note_id"), "confidence": tag_result.get("confidence")},
-                lesson="低置信度标签需要人工 review"
-            )
-            learnings["observations_added"] += 1
-        
-        # 检查连接数
-        store_result = result["steps"].get("store", {})
-        if store_result.get("links_count", 0) == 0:
-            self.rule_miner.add_observation(
-                category="孤立笔记",
-                description=f"笔记 {store_result.get('note_id')} 无连接",
-                context={"note_id": store_result.get("note_id")},
-                lesson="新笔记应该主动建立与旧笔记的连接"
-            )
-            learnings["observations_added"] += 1
-        
-        # 信念更新：检查知识量 vs 应用率
-        total_notes = len(self.store_fn.note_index.get("notes", {}))
-        total_sparks = len(list(self.base_path.glob("outputs/sparks/*.md")))
-        
-        if total_notes > 0:
-            application_rate = total_sparks / total_notes
-            if application_rate < 0.2:  # 应用率<20%
-                conflict = self.belief_updater.check_belief_conflict(
-                    belief="知识越多越好",
-                    new_data={
-                        "total_notes": total_notes,
-                        "total_sparks": total_sparks,
-                        "application_rate": application_rate
-                    }
-                )
-                if conflict["conflict_score"] >= 0.7:
-                    learnings["beliefs_updated"] += 1
-                    learnings["conflicts"].append(conflict)
-        
-        learnings["beliefs_checked"] += 1
-        
-        # 自我修复：每 10 次执行运行一次 lint
-        workflow_count = len(list(self.base_path.glob("_log.md")))
-        if workflow_count % 10 == 0:
-            lint_report = self.wiki_lint.run_lint(auto_fix=True)
-            learnings["lint_run"] = True
-            learnings["lint_health_score"] = lint_report["health_score"]
-            learnings["lint_issues"] = len(lint_report["issues"])
-            learnings["lint_fixed"] = len(lint_report["fixed_issues"])
-        else:
-            learnings["lint_run"] = False
-        
-        # 获取新提炼的规则
-        rules = self.rule_miner.get_rules()
-        learnings["rules"] = rules
-        learnings["rules_created"] = len([r for r in rules if r.get("status") == "active"])
-        
-        return learnings
-    
-    def _execute_with_timeout(self, func, func_name: str, *args, **kwargs):
-        """带超时执行的包装器"""
-        timeout = self.TIMEOUT_CONFIG.get(func_name, self.TIMEOUT_CONFIG["default"])
-        
-        # 创建带超时的包装函数
-        def wrapper():
-            return func(*args, **kwargs)
-        
-        # 执行（简化版超时处理）
-        # 注意：Python 中实现真正的超时需要 threading 或 multiprocessing
-        # 这里使用简化版本
-        try:
-            return wrapper()
-        except Exception as e:
-            logger.error(f"{func_name} 执行失败：{str(e)}")
-            raise
-    
-    def collect(self, source_type: str, content: str, metadata: Optional[Dict] = None) -> Dict:
-        """单独调用收集功能"""
-        return self.collect_fn.execute(source_type, content, metadata)
-    
-    def tag(self, note_id: str, content: str) -> Dict:
-        """单独调用打标功能"""
-        return self.tag_fn.execute(note_id, content)
-    
-    def store(self, note_id: str, content: str, tags: Dict) -> Dict:
-        """单独调用存储功能"""
-        return self.store_fn.execute(note_id, content, tags)
-    
-    def evolve(self, note_id: str, evolve_type: str = "spark", context: Optional[Dict] = None) -> Dict:
-        """单独调用知识发芽功能"""
-        return self.evolve_fn.execute(note_id, evolve_type, context)
-    
-    def output(self, evolve_id: str, output_type: str = "article", style: Optional[Dict] = None) -> Dict:
-        """单独调用产出功能"""
-        return self.output_fn.execute(evolve_id, output_type, style)
+    def _extract_topic(self, content: str) -> str:
+        """提取主题（简化版）"""
+        # TODO: 用 AI 提取主题
+        lines = content.split('\n')
+        for line in lines:
+            if line.strip() and not line.startswith('#'):
+                return line.strip()[:50]
+        return "未命名主题"
 
 
 def main():
@@ -369,54 +358,43 @@ def main():
     if len(sys.argv) < 2:
         print("用法：python main.py <command> [args]")
         print("\n可用命令:")
-        print("  run <source_type> <content>  - 运行完整工作流")
-        print("  collect <source_type> <content> - 收集")
-        print("  tag <note_id> - 打标")
-        print("  evolve <note_id> [type] - 知识发芽")
-        print("  output <evolve_id> [type] - 产出")
+        print("  collect <source> <content>  - 收集上下文")
+        print("  tag <id> <content>          - 打标")
+        print("  build-tree <topic>          - 构建思维树")
+        print("  daily-log                   - 认知日志")
+        print("  recall <decision>           - 决策回溯")
+        print("  run <source> <content>      - 一键工作流")
         return
     
-    kw = KnowledgeWorkflow()
+    cm = ContextManager()
     command = sys.argv[1]
     
-    if command == "run":
+    if command == "collect":
         if len(sys.argv) < 4:
-            print("❌ 需要 source_type 和 content")
+            print("❌ 需要 source 和 content")
             return
-        result = kw.run(sys.argv[2], sys.argv[3])
-        print(json.dumps(result, indent=2, ensure_ascii=False))
-    
-    elif command == "collect":
-        if len(sys.argv) < 4:
-            print("❌ 需要 source_type 和 content")
-            return
-        result = kw.collect(sys.argv[2], sys.argv[3])
+        result = cm.collect(sys.argv[2], sys.argv[3])
         print(json.dumps(result, indent=2, ensure_ascii=False))
     
     elif command == "tag":
-        if len(sys.argv) < 3:
-            print("❌ 需要 note_id")
+        if len(sys.argv) < 4:
+            print("❌ 需要 id 和 content")
             return
-        # 从文件读取内容
-        note_path = kw.base_path / "00-Inbox" / f"{sys.argv[2]}.md"
-        content = note_path.read_text()
-        result = kw.tag(sys.argv[2], content)
+        result = cm.tag(sys.argv[2], sys.argv[3])
         print(json.dumps(result, indent=2, ensure_ascii=False))
     
-    elif command == "evolve":
+    elif command == "build-tree":
         if len(sys.argv) < 3:
-            print("❌ 需要 note_id")
+            print("❌ 需要 topic")
             return
-        evolve_type = sys.argv[3] if len(sys.argv) > 3 else "spark"
-        result = kw.evolve(sys.argv[2], evolve_type)
+        result = cm.build_tree(sys.argv[2])
         print(json.dumps(result, indent=2, ensure_ascii=False))
     
-    elif command == "output":
-        if len(sys.argv) < 3:
-            print("❌ 需要 evolve_id")
+    elif command == "run":
+        if len(sys.argv) < 4:
+            print("❌ 需要 source 和 content")
             return
-        output_type = sys.argv[3] if len(sys.argv) > 3 else "article"
-        result = kw.output(sys.argv[2], output_type)
+        result = cm.run(sys.argv[2], sys.argv[3])
         print(json.dumps(result, indent=2, ensure_ascii=False))
     
     else:

@@ -1,213 +1,212 @@
 ---
-name: knowledge-workflow
-version: 2.0.0
-description: ［何时使用］当用户需要沉淀知识、分类知识、让知识产生新内容时；当用户说"处理这个知识""知识管理工作流""整理这篇笔记""生成文章"时；当检测到"飞书文档""微信读书""知识整理""打标""知识发芽"等关键词时；基于 Karpathy LLM Wiki 思路，打造会"生长"的知识库
+name: context-manager
+version: 1.0.0
+description: ［何时使用］当用户需要管理个人上下文（Context）时；当用户说"管理我的上下文""整理重要信息""记录关键认知"时；当检测到"决策背景""记忆外脑""认知地图""内心认知"等关键词时；基于 AI 时代个人上下文管理需求，打造思维树构建师
 author: 燃冰 & ant
 created: 2026-04-14
 skill_type: 通用
-related_skills: [note-tagger, knowledge-evolution, wechat-publisher]
-tags: [知识管理，工作流，AI, 知识沉淀，自进化，Karpathy]
+related_skills: [knowledge-workflow, note-tagger, experience-memory-tracker]
+tags: [上下文管理，个人认知，思维树，AI 辅助，记忆外脑]
 ---
 
-# 知识管理工作流 🎯
+# 上下文管理师 🧠
 
-**基于 Karpathy LLM Wiki 思路，打造会"生长"的知识库**
+**AI 驱动的系统性问题分析与解决方案生成工具**
 
-**让知识从"收藏"变成"产出"的完整系统**
+**让知识从"收藏"变成"认知"**
 
 ---
 
 ## 📋 功能描述
 
-基于 Karpathy LLM Wiki 思路，帮助用户打造会"生长"的知识库。
+**基于 Karpathy LLM Wiki + 上下文管理理论**，帮助用户在 AI 时代管理个人上下文。
 
-**适用场景：**
-- 处理飞书文档/微信读书/网页文章
-- 自动打标（主题 📚 + 场景 🎬 + 行动 ⚡）
-- 自动建立 [[wikilinks]] 交叉引用
-- 知识发芽（💡灵光/🧠心智模型/🔀跨界/🎯微习惯/🧘潜意识）
-- 生成公众号文章/周报/月报
-- 规则提炼（从经验中学习）
-- 信念更新（数据驱动认知升级）
-- 自我修复（lint 检查 + 自动修复）
-
-**边界条件：**
-- 不替代手动深度思考
-- 需配合人工 review
-- 飞书文档需要协作权限
-
-**核心理念：**
-> 传统知识库：人工维护 → 越来越乱 → 放弃
+**核心洞察**：
+> 知识管理的本质不是管理知识，而是管理**个人上下文**（Context）。
 > 
-> 自进化知识库：LLM 维护 + 自进化 → 越来越有序 → 复利增长
+> 上下文 = 个人知识 + 经历 + 情感 + 判断 = 认知框架
+
+**适用场景**：
+- 管理微信/飞书/小红书等分散信息
+- 记录内心认知（触动事 + 判断）
+- 构建思维树（自动关联 + 认知地图）
+- 决策时快速回溯相关上下文
+- 每周回顾认知更新
+- 设置 AI 辅助边界
+
+**边界条件**：
+- 不替代深度思考（明确 AI 辅助边界）
+- 需配合人工标注意义标签
+- 内心认知需要主动记录
 
 ---
 
 ## ⚠️ 常见错误
 
-**错误 1：来源类型不支持**
+**错误 1：过度依赖 AI**
 ```
 问题：
-• 用户输入了不支持的来源类型（如 notion）
+• 所有思考都交给 AI，弱化自主思考能力
 
 解决：
-✓ 当前支持：feishu|wechat|url|text
-✓ 提示用户选择支持的类型
+✓ 明确 AI 辅助边界：哪些事必须自己思考
+✓ AI 生成摘要，但最终决策手动确认
+✓ 保留"不记录的权利"，给直觉留空间
 ```
 
-**错误 2：飞书文档无法读取**
+**错误 2：信息过载**
 ```
 问题：
-• doc_token 错误或无权限
-• 飞书文档是私有的
+• 每天接触大量碎片内容，难以筛选真正重要的
 
 解决：
-✓ 检查 doc_token 是否正确（从飞书链接 `/docx/XXX` 提取 XXX）
-✓ 检查飞书文档权限（设置为公开或添加协作者）
-✓ 使用 `feishu_doc action=read` 测试权限
+✓ 设置关键词触发（"重要""决定""灵感"）
+✓ 每天只记录 3 件触动事
+✓ 每季度删除冗余内容
 ```
 
-**错误 3：知识发芽类型错误**
+**错误 3：工具割裂**
 ```
 问题：
-• 用户输入了不支持的发芽类型
+• 微信/飞书/小红书数据无法互通
 
 解决：
-✓ 当前支持：spark|model|cross|habit|subconscious
-✓ 提供默认值 spark
-✓ 提示用户可用类型
+✓ 统一导入到上下文管理库
+✓ 用 AI 做"记忆外脑"，自动整理
+✓ 建立"上下文桥接机制"
 ```
 
-**错误 4：存储目录无权限**
+**错误 4：认知私有化**
 ```
 问题：
-• ~/kb 目录不存在或无写入权限
+• 内心感受和判断难以用语言准确记录
 
 解决：
-✓ 创建目录：`mkdir -p ~/kb/{00-Inbox,outputs}`
-✓ 设置权限：`chmod 755 ~/kb`
+✓ 用语音或文字快速记录（哪怕不完整）
+✓ 建立"个人意义标签体系"
+✓ 每周生成"认知地图"
 ```
 
 ---
 
 ## 🧪 使用示例
 
-### 示例 1：一键处理飞书文档
+### 示例 1：记录内心认知
 
-**输入：**
+**输入**：
 ```
-@ant knowledge-workflow:
-来源：飞书文档 PFAvdKEILouK29xCgNuc5b1bnnK
-自动执行：collect → tag → store → evolve → output
-```
-
-**预期输出：**
-```json
-{
-  "workflow_id": "wf-20260414-001",
-  "status": "completed",
-  "steps": {
-    "collect": {"note_id": "note-001", "status": "success"},
-    "tag": {"tags": {"themes": ["知识管理"]}, "status": "success"},
-    "store": {"path": "~/kb/40-管理/note-001.md", "status": "success"},
-    "evolve": {"evolve_id": "spark-001", "status": "success"},
-    "output": {"article_id": "article-001", "status": "success"}
-  }
-}
+@ant context-manager:
+类型：内心认知日志
+内容：今天和朋友争论时，我发现自己忘记了曾经也有过类似经历。
+触动点：记忆断层
+我的判断：需要建立"经历回溯"机制
 ```
 
-### 示例 2：分步处理 - 只打标
+**输出**：
+```markdown
+---
+type: 内心认知日志
+date: 2026-04-14
+tags: [#记忆断层 #经历回溯 #关系锚点]
+---
 
-**输入：**
-```
-@ant knowledge-workflow tag:
-笔记内容：知识管理的本质不是囤积，而是让知识"生长"和"被用"。
-```
+# 内心认知日志
 
-**预期输出：**
-```json
-{
-  "note_id": "note-001",
-  "tags": {
-    "themes": ["知识管理"],
-    "scenes": ["场景/学习时"],
-    "actions": ["行动/存档"]
-  },
-  "confidence": 0.8,
-  "status": "tagged"
-}
-```
+**触动事**：今天和朋友争论时，我发现自己忘记了曾经也有过类似经历。
 
-### 示例 3：知识发芽
+**触动点**：记忆断层
 
-**输入：**
-```
-@ant knowledge-workflow evolve:
-笔记 ID：note-001
-发芽类型：spark
-```
+**我的判断**：需要建立"经历回溯"机制
 
-**预期输出：**
-```json
-{
-  "evolve_id": "spark-001",
-  "evolve_type": "spark",
-  "content": {
-    "title": "知识管理的本质",
-    "insight": "知识管理不是\"建图书馆\"，而是\"种花园\"",
-    "insight_chain": ["表面问题", "深层原因", "本质规律"],
-    "cross_links": ["花园×知识管理", "健身×知识管理"]
-  },
-  "status": "evolved"
-}
+**AI 分析**：
+- 情绪：遗憾 + 觉察
+- 模式：第 3 次出现类似情况
+- 建议：建立"争论前回溯"习惯
+
+**关联上下文**：
+- [[2026-03-15 类似争论]]
+- [[记忆管理策略]]
 ```
 
 ---
 
-## ⚙️ 配置说明
+### 示例 2：构建思维树
 
-编辑 `config.yaml`：
-
-```yaml
-storage:
-  default_type: "local"  # local|feishu|obsidian
-  base_path: "~/kb"
-
-tagging:
-  auto_tag: true
-  confidence_threshold: 0.6
-
-evolution:
-  default_type: "spark"  # spark|model|cross|habit|subconscious
-
-output:
-  default_type: "article"  # article|weekly|monthly
+**输入**：
+```
+@ant context-manager build-tree:
+主题：知识管理
+时间范围：最近 3 个月
 ```
 
-**首次使用检查**：
-```bash
-# 检查配置
-cat config.yaml
+**输出**：
+```markdown
+# 思维树：知识管理（2026-01 至 2026-04）
 
-# 创建目录
-mkdir -p ~/kb/{00-Inbox,outputs}
+## 核心认知
+- 知识管理的本质是管理个人上下文
+- 不是"存"，而是"用"
+- 让知识自动生长
 
-# 测试运行
-python main.py collect feishu PFAvdKEILouK29xCgNuc5b1bnnK
+## 外部信息
+- 飞书文档《如何建立知识管理体系》
+- 微信读书《价值》划线
+- 小红书笔记"知识管理痛点"
+
+## 内心认知
+- 2026-02-10：收藏 1000 篇，读完<10% → 痛点
+- 2026-03-15：知识库变"数字坟墓" → 反思
+- 2026-04-14：知识管理=上下文管理 → 洞察
+
+## 上下文桥接
+微信收藏 → 引发痛点 → 飞书文档 → 形成方案 → 小红书验证
+
+## 认知更新
+- 旧认知：知识管理=整理
+- 新认知：知识管理=上下文管理
 ```
 
 ---
 
-## 🔗 相关技能
+### 示例 3：决策回溯
 
-- `note-tagger` - 笔记打标（本技能的前置技能，可单独使用）
-- `knowledge-evolution` - 知识演化（本技能的核心功能）
-- `wechat-publisher` - 公众号发布（配合产出使用）
-
-**推荐组合**：
+**输入**：
 ```
-knowledge-workflow → wechat-publisher
-（处理知识）    （发布文章）
+@ant context-manager:
+类型：决策回溯
+决策：要不要加仓这只基金？
+```
+
+**输出**：
+```markdown
+# 决策回溯：要不要加仓这只基金？
+
+## 相关上下文（快速回溯）
+
+### 1. 投资原则（2026-01-10）
+- 资产配置纪律：股债 60/40
+- 单只基金上限：10%
+- 不加仓理由：保持纪律
+
+### 2. 类似决策（2025-12-15）
+- 当时决策：不加仓
+- 结果：正确（避免了下跌）
+- 认知：纪律>短期收益
+
+### 3. 内心认知（2026-04-10）
+- 触动点：看到别人赚钱，想追高
+- 判断：FOMO 情绪，需要警惕
+- 标签：#FOMO #纪律
+
+## AI 建议
+- 情绪分析：贪婪 70%，恐惧 30%
+- 模式识别：第 5 次出现 FOMO
+- 建议：不加仓，保持纪律
+
+## 最终决策
+[ ] 加仓  [x] 不加仓  [ ] 观望
+
+**决策理由**：保持资产配置纪律，避免 FOMO 情绪
 ```
 
 ---
@@ -216,217 +215,187 @@ knowledge-workflow → wechat-publisher
 
 | 问题 | 检查项 |
 |------|--------|
-| 不触发 | clawhub.yaml 中 description 是否包含触发词？ |
-| 收集失败 | 飞书 doc_token 是否正确？有权限吗？ |
-| 打标失败 | 笔记内容是否为空？ |
-| 存储失败 | 目录有写入权限吗？(`chmod 755 ~/kb`) |
-| 发芽失败 | evolve_type 是否支持（spark\|model\|cross\|habit\|subconscious）？ |
-| 输出失败 | outputs 目录存在吗？ |
+| 不触发 | description 是否包含触发词？ |
+| 上下文收集失败 | 微信/飞书 API 权限？ |
+| 思维树为空 | 是否有足够的内心认知记录？ |
+| 决策回溯无结果 | 是否有历史决策记录？ |
+| 认知地图混乱 | 是否定期删除冗余内容？ |
 
-**调试模式**：
-```bash
-# 查看详细日志
-python main.py run feishu <doc_token> 2>&1 | tee debug.log
+---
 
-# 检查 Python 依赖
-pip install -r requirements.txt
+## 🎯 核心功能
 
-# 测试单个功能
-python main.py collect feishu <doc_token>
+### 1. 上下文收集
+
+**支持来源**：
+- 微信聊天记录
+- 飞书文档
+- 小红书笔记
+- 内心认知日志
+- 网页文章
+- 手动笔记
+
+**使用示例**：
+```
+@ant context-manager collect:
+来源：微信
+内容：[粘贴聊天记录]
+
+@ant context-manager collect:
+来源：内心认知
+内容：今天有个洞察...
 ```
 
 ---
 
-## 📋 Skill 描述
+### 2. 思维树构建
 
-**名称**：`knowledge-workflow`
+**功能**：自动关联外部信息 + 内心认知，形成认知地图。
 
-**用途**：完整的知识管理工作流，让 Agent 可以快速调用，沉淀知识、分类知识、让知识产生新内容。
-
-**触发词**：
-- "处理这个知识"
-- "知识管理工作流"
-- "knowledge-workflow"
-- "沉淀这个知识"
-
----
-
-## 🎯 完整工作流
-
+**使用示例**：
 ```
-输入内容 → 收集 → 打标 → 存储 → 知识发芽 → 产出
-```
-
-**5 个核心阶段，每个阶段都是可调用的子功能**：
-
-| 阶段 | 子功能 | 输入 | 输出 |
-|------|-------|------|------|
-| **1. 收集** | `collect` | 飞书链接/微信读书/网页 URL | Markdown 笔记 |
-| **2. 打标** | `tag` | Markdown 笔记 | 带标签的笔记 |
-| **3. 存储** | `store` | 带标签的笔记 | 存储到知识库 + 双链建议 |
-| **4. 发芽** | `evolve` | 已存储笔记 | 5 种知识发芽产出 |
-| **5. 产出** | `output` | 发芽内容 | 公众号文章/周报/月报 |
-
----
-
-## 🎯 子功能详解
-
-完整子功能文档见：[references/子功能详解.md](references/子功能详解.md)
-
-**快速概览**：
-
-| 功能 | 用途 | 输入 | 输出 |
-|------|------|------|------|
-| **collect** | 收集知识 | 飞书/微信读书/URL/文本 | Markdown 笔记 |
-| **tag** | 自动打标 | 笔记内容 | 主题 + 场景 + 行动标签 |
-| **store** | 存储 + 双链 | 带标签笔记 | 存储路径 + 双链建议 |
-| **evolve** | 知识发芽 | 已存储笔记 | 灵光/心智模型/跨界/微习惯/潜意识 |
-| **output** | 内容产出 | 发芽内容 | 公众号文章/周报/月报 |
-
----
-
-## 🔄 完整工作流调用
-
-### 方式 1：分步调用
-
-```
-1. @ant knowledge-workflow collect: [来源]
-2. @ant knowledge-workflow tag: [笔记内容]
-3. @ant knowledge-workflow store: [带标签笔记]
-4. @ant knowledge-workflow evolve: [笔记 ID]
-5. @ant knowledge-workflow output: [发芽内容]
-```
-
-### 方式 2：一键调用（自动执行全流程）
-
-```
-@ant knowledge-workflow:
-来源：飞书文档 PFAvdKEILouK29xCgNuc5b1bnnK
-自动执行：collect → tag → store → evolve → output
+@ant context-manager build-tree:
+主题：知识管理
+时间范围：最近 3 个月
 ```
 
 **输出**：
-```json
-{
-  "workflow_id": "wf-20260414-001",
-  "status": "completed",
-  "steps": {
-    "collect": {"status": "success", "note_id": "note-001"},
-    "tag": {"status": "success", "tags": {...}},
-    "store": {"status": "success", "path": "..."},
-    "evolve": {"status": "success", "evolve_id": "spark-001"},
-    "output": {"status": "success", "article": "..."}
-  }
-}
+- 核心认知
+- 外部信息
+- 内心认知
+- 上下文桥接
+- 认知更新
+
+---
+
+### 3. 意义标签体系
+
+**标签类型**：
+- `#成长痛点#` - 成长过程中的痛点
+- `#关系锚点#` - 重要关系的锚点事件
+- `#灵感触发#` - 灵感触发的瞬间
+- `#认知冲突#` - 认知冲突的时刻
+- `#决策背景#` - 重要决策的背景
+
+**使用示例**：
+```
+@ant context-manager tag:
+内容：今天和朋友争论...
+标签：#关系锚点# #认知冲突#
 ```
 
 ---
 
-## ⚙️ 配置说明
+### 4. 认知日志
 
-编辑 `config.yaml`：
+**功能**：每天记录 3 件触动事 + 你的判断。
 
-```yaml
-storage:
-  default_type: "local"  # local|feishu|obsidian
-  base_path: "~/kb"
-
-tagging:
-  auto_tag: true
-  confidence_threshold: 0.6
-
-evolution:
-  default_type: "spark"  # spark|model|cross|habit|subconscious
-
-output:
-  default_type: "article"  # article|weekly|monthly
+**使用示例**：
 ```
-
-**首次使用检查**：
-```bash
-# 检查配置
-cat config.yaml
-
-# 创建目录
-mkdir -p ~/kb/{00-Inbox,outputs}
-
-# 测试运行
-python main.py collect feishu PFAvdKEILouK29xCgNuc5b1bnnK
+@ant context-manager daily-log:
+1. 触动事：... 判断：...
+2. 触动事：... 判断：...
+3. 触动事：... 判断：...
 ```
 
 ---
 
-## 🔗 与其他 Skill 组合
+### 5. 上下文桥接
 
-- `note-tagger` - 笔记打标（前置技能）
-- `knowledge-evolution` - 知识演化（核心功能）
-- `wechat-publisher` - 公众号发布（产出配合）
+**功能**：把内心想法与外部信息用箭头连接。
 
-**推荐工作流**：
+**使用示例**：
 ```
-knowledge-workflow → wechat-publisher
-（处理知识）    （发布文章）
-```
-
-完整 API 文档见：[README.md](README.md)
-
----
-
-## 📝 发布到 ClawHub
-
-### 1. 创建 Skill 目录结构
-
-```
-~/kb/skills/knowledge-workflow/
-├── SKILL.md              # 本文档
-├── main.py               # 主程序
-├── subfunctions/
-│   ├── collect.py        # 收集功能
-│   ├── tag.py            # 打标功能
-│   ├── store.py          # 存储功能
-│   ├── evolve.py         # 知识发芽
-│   └── output.py         # 产出功能
-├── config.yaml           # 配置文件
-└── requirements.txt      # 依赖
+@ant context-manager bridge:
+内心想法：知识管理=上下文管理
+外部信息：飞书文档《知识管理体系》
 ```
 
-### 2. 编写 clawhub.yaml
-
-```yaml
-name: knowledge-workflow
-version: 1.0.0
-description: 完整的知识管理工作流，让 Agent 可以快速调用，沉淀知识、分类知识、让知识产生新内容
-author: 燃冰 & ant
-tags: [知识管理，工作流，AI]
-
-entry_point: main.py
-dependencies:
-  - python>=3.6
-  - requests
-  - pyyaml
-
-triggers:
-  - "处理这个知识"
-  - "知识管理工作流"
-  - "沉淀这个知识"
-  - "knowledge-workflow"
+**输出**：
 ```
-
-### 3. 发布命令
-
-```bash
-cd ~/kb/skills/knowledge-workflow
-clawhub publish
+内心想法 → 引发洞察 → 飞书文档 → 形成方案
 ```
 
 ---
 
+### 6. AI 辅助边界
 
+**功能**：明确哪些事必须自己思考，哪些可交给 AI。
+
+**使用示例**：
+```
+@ant context-manager ai-boundary:
+事项：重大人生决定
+边界：必须自己思考
+
+事项：会议纪要
+边界：可交给 AI
+```
 
 ---
 
+### 7. 决策回溯
 
+**功能**：在关键决策时，快速回溯至少 2 个相关上下文点。
+
+**使用示例**：
+```
+@ant context-manager recall:
+决策：要不要加仓这只基金？
+```
+
+**输出**：
+- 相关投资原则
+- 类似决策历史
+- 内心认知记录
+- AI 建议
 
 ---
 
+### 8. 认知更新
 
+**功能**：每季度删除冗余内容，每年重审核心认知。
+
+**使用示例**：
+```
+@ant context-manager review:
+周期：季度
+操作：删除冗余
+
+@ant context-manager review:
+周期：年度
+操作：重审核心认知
+```
+
+---
+
+## 📊 成功指标
+
+| 指标 | 目标 | 检查方式 |
+|------|------|----------|
+| **每周回顾** | 能复述出 3 个重要认知更新 | 周日报 |
+| **决策回溯** | 能快速回溯至少 2 个相关上下文点 | 决策记录 |
+| **情绪焦虑** | 因信息混乱而下降 30% | 自我评估 |
+| **认知完整性** | 内心认知与外部数据形成互补 | 认知地图 |
+| **AI 辅助边界** | 明确哪些自己思考，哪些交给 AI | 边界清单 |
+
+---
+
+## 🔗 相关技能
+
+- `knowledge-workflow` - 知识管理工作流（前置技能）
+- `note-tagger` - 笔记打标
+- `experience-memory-tracker` - 体验记忆追踪
+
+**推荐组合**：
+```
+context-manager → knowledge-workflow
+（上下文管理）    （知识生产）
+```
+
+---
+
+**维护者**：燃冰 & ant  
+**版本**：v1.0  
+**创建日期**：2026-04-14  
+**发布状态**：待发布
