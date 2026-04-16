@@ -1,19 +1,22 @@
 ---
-name: context-manager
-version: 1.0.0
+name: personal-context-manager
+version: 1.1.0
 description: ［何时使用］当用户需要管理个人上下文（Context）时；当用户说"管理我的上下文""整理重要信息""记录关键认知"时；当检测到"决策背景""记忆外脑""认知地图""内心认知"等关键词时；基于 AI 时代个人上下文管理需求，打造思维树构建师
 author: 燃冰 & ant
 created: 2026-04-14
-skill_type: 通用
+skill_type: 通用🟡
 related_skills: [knowledge-workflow, note-tagger, experience-memory-tracker]
 tags: [上下文管理，个人认知，思维树，AI 辅助，记忆外脑]
 ---
 
-# 上下文管理师 🧠
+# Personal-Context-Manager 个人上下文管理师 🧠
 
-**AI 驱动的系统性问题分析与解决方案生成工具**
+**AI 驱动的个人认知管理系统**
 
 **让知识从"收藏"变成"认知"**
+
+**版本：** v1.1.0  
+**最后更新：** 2026-04-16
 
 ---
 
